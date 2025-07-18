@@ -12,7 +12,7 @@ const Header: React.FC = () => {
           />
           <div>
             <h1 className="text-xl font-bold text-secondary-900">Présence Bureau</h1>
-            <p className="text-sm text-primary-600">Ré. servez   votre place à l'agence</p>
+            <p className="text-sm text-primary-600">Réservez votre place à l'agence</p>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Users, MapPin, Clock } from 'lucide-react';
 import CalendarView from './components/CalendarView';
-import Header from './components/Header.1';
+import Header from './components/Header';
 import ReservationModal from './components/ReservationModal';
 import { PresenceData } from './types/presence';
 
