@@ -91,7 +91,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 <div className="space-y-2">
                   {reservations.map((reservation, index) => (
                     <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                       <span>{reservation.name}</span>
                     </div>
                   ))}
@@ -111,7 +111,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Entrez votre nom"
                   required
                 />
@@ -124,7 +124,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                   w-full px-4 py-2 rounded-lg font-medium transition-all duration-200
                   ${!name.trim() || isSubmitting
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-lg'
                   }
                 `}
               >
