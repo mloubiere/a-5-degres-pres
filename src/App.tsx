@@ -46,16 +46,6 @@ function App() {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-primary-100 rounded-lg">
-                <Calendar className="h-6 w-6 text-primary-600" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-secondary-900">Présence au Bureau</h1>
-                <p className="text-secondary-600">Réservez votre place à l'agence 5 Degrés</p>
-              </div>
-            </div>
-
-
             <CalendarView
               onDateClick={handleDateClick}
               getAvailableSpots={getAvailableSpots}
