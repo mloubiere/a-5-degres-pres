@@ -15,7 +15,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  const daysOfWeek = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  const daysOfWeek = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
   const months = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
@@ -23,7 +23,12 @@ const CalendarView: React.FC<CalendarViewProps> = ({
 
   const getFirstDayOfMonth = (date: Date) => {
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    return firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Adjust for Monday start
+    const dayOfWeek = firstDay.getDay();
+    // Convert to Monday start (0=Monday, 1=Tuesday, ..., 4=Friday)
+    // Skip weekends entirely
+    if (dayOfWeek === 0) return -1; // Sunday - skip
+    if (dayOfWeek === 6) return -1; // Saturday - skip
+    return dayOfWeek - 1;
   };
 
   const getDaysInMonth = (date: Date) => {
@@ -59,42 +64,64 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     const daysInMonth = getDaysInMonth(currentDate);
     const days = [];
 
-    // Empty cells for days before the first day of the month
-    for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="h-24"></div>);
+    // Days of the month (only weekdays)
+    let currentWeekDay = firstDay >= 0 ? firstDay : 0;
+    let needsEmptyCell = firstDay > 0;
+    
+    // Add empty cells for the beginning of the month if needed
+    if (needsEmptyCell) {
+      for (let i = 0; i < firstDay; i++) {
+        days.push(<div key={`empty-${i}`} className="h-24"></div>);
+      }
     }
-
-    // Days of the month
+    
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+      const dayOfWeek = date.getDay();
+      
+      // Skip weekends
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        continue;
+      }
+      
       const availableSpots = getAvailableSpots(date);
       const reservations = getReservations(date);
-      const isWeekendDay = isWeekend(date);
       const isPast = isPastDate(date);
       const isTodayDate = isToday(date);
+
+      // Add empty cells to complete the week if we're starting a new week
+      const currentDayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Convert to our 0-4 index
+      const expectedDayIndex = currentWeekDay % 5;
+      
+      if (currentDayIndex < expectedDayIndex) {
+        // We've moved to a new week, fill remaining cells of previous week
+        const cellsToAdd = 5 - expectedDayIndex;
+        for (let i = 0; i < cellsToAdd; i++) {
+          days.push(<div key={`week-end-${day}-${i}`} className="h-24"></div>);
+        }
+        currentWeekDay = currentDayIndex;
+      } else {
+        currentWeekDay = currentDayIndex;
+      }
 
       days.push(
         <div
           key={day}
-          onClick={() => !isPast && !isWeekendDay && onDateClick(date)}
+          onClick={() => !isPast && onDateClick(date)}
           className={`
             h-24 border border-gray-200 p-2 cursor-pointer transition-all duration-200
             ${isTodayDate ? 'bg-primary-50 border-primary-300' : 'bg-white hover:bg-gray-50'}
             ${isPast ? 'bg-gray-100 cursor-not-allowed opacity-50' : ''}
-            ${isWeekendDay ? 'bg-gray-50 cursor-not-allowed' : ''}
-            ${!isPast && !isWeekendDay ? 'hover:shadow-md hover:scale-105' : ''}
+            ${!isPast ? 'hover:shadow-md hover:scale-105' : ''}
           `}
         >
           <div className="flex justify-between items-start mb-1">
             <span className={`text-sm font-medium ${isTodayDate ? 'text-primary-700' : 'text-secondary-900'}`}>
               {day}
             </span>
-            {isWeekendDay && (
-              <span className="text-xs text-gray-500">WE</span>
-            )}
           </div>
           
-          {!isWeekendDay && !isPast && (
+          {!isPast && (
             <div className="space-y-1">
               <div className="flex items-center gap-1">
                 <div className={`w-2 h-2 rounded-full ${
@@ -119,6 +146,8 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           )}
         </div>
       );
+      
+      currentWeekDay++;
     }
 
     return days;
@@ -151,7 +180,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-0">
+      <div className="grid grid-cols-5 gap-0">
         {daysOfWeek.map(day => (
           <div key={day} className="bg-secondary-100 p-3 text-center text-sm font-medium text-secondary-700 border-b border-secondary-200">
             {day}
