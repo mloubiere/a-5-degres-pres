@@ -98,7 +98,9 @@ const CalendarView: React.FC<CalendarViewProps> = ({
             <div className="space-y-1">
               <div className="flex items-center gap-1">
                 <div className={`w-2 h-2 rounded-full ${
-                  availableSpots > 0 ? 'bg-success-500' : 'bg-red-500'
+                  availableSpots === 0 ? 'bg-red-500' : 
+                  availableSpots < 5 ? 'bg-accent-400' : 
+                  'bg-success-500'
                 }`}></div>
                 <span className="text-xs text-gray-600">
                   {availableSpots} places

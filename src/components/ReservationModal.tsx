@@ -70,16 +70,27 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 <MapPin className="h-5 w-5 text-primary-600" />
                 <span className="font-semibold text-primary-900">Disponibilité</span>
               </div>
-              <p className="text-sm text-primary-700">
-                {availableSpots > 0 ? (
-                  <>
-                    <span className="font-semibold text-success-600">{availableSpots} places disponibles</span>
-                    {availableSpots === 1 ? ' restante' : ' restantes'}
-                  </>
-                ) : (
-                  <span className="font-semibold text-red-600">Aucune place disponible</span>
-                )}
-              </p>
+              <div className="flex items-center gap-2">
+                <div className={`w-3 h-3 rounded-full ${
+                  availableSpots === 0 ? 'bg-red-500' : 
+                  availableSpots < 5 ? 'bg-accent-400' : 
+                  'bg-success-500'
+                }`}></div>
+                <p className="text-sm text-primary-700">
+                  {availableSpots > 0 ? (
+                    <>
+                      <span className={`font-semibold ${
+                        availableSpots < 5 ? 'text-accent-600' : 'text-success-600'
+                      }`}>
+                        {availableSpots} places disponibles
+                      </span>
+                      {availableSpots === 1 ? ' restante' : ' restantes'}
+                    </>
+                  ) : (
+                    <span className="font-semibold text-red-600">Aucune place disponible</span>
+                  )}
+                </p>
+              </div>
             </div>
 
             {reservations.length > 0 && (

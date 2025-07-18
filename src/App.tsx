@@ -30,7 +30,7 @@ function App() {
   const getAvailableSpots = (date: Date) => {
     const dateKey = date.toISOString().split('T')[0];
     const reservations = presenceData[dateKey] || [];
-    return Math.max(0, 12 - 9 - reservations.length); // 12 places - 9 internes - réservations
+    return Math.max(0, 12 - reservations.length); // 12 places maximum - réservations
   };
 
   const getReservations = (date: Date) => {
