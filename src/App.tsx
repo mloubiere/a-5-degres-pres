@@ -55,31 +55,6 @@ function App() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <MapPin className="h-5 w-5 text-primary-600" />
-                  <span className="font-semibold text-primary-900">Places disponibles</span>
-                </div>
-                <p className="text-sm text-primary-700">12 places assises par jour</p>
-              </div>
-              
-              <div className="bg-success-50 border border-success-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-success-600" />
-                  <span className="font-semibold text-success-900">Équipe interne</span>
-                </div>
-                <p className="text-sm text-success-700">8-9 personnes présentes</p>
-              </div>
-              
-              <div className="bg-accent-50 border border-accent-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="h-5 w-5 text-accent-600" />
-                  <span className="font-semibold text-accent-900">Réservation</span>
-                </div>
-                <p className="text-sm text-accent-700">Simple et rapide</p>
-              </div>
-            </div>
 
             <CalendarView
               onDateClick={handleDateClick}
