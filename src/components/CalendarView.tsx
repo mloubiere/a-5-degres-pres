@@ -79,14 +79,14 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           onClick={() => !isPast && !isWeekendDay && onDateClick(date)}
           className={`
             h-24 border border-gray-200 p-2 cursor-pointer transition-all duration-200
-            ${isTodayDate ? 'bg-blue-50 border-blue-300' : 'bg-white hover:bg-gray-50'}
+            ${isTodayDate ? 'bg-indigo-50 border-indigo-300' : 'bg-white hover:bg-gray-50'}
             ${isPast ? 'bg-gray-100 cursor-not-allowed opacity-50' : ''}
             ${isWeekendDay ? 'bg-gray-50 cursor-not-allowed' : ''}
             ${!isPast && !isWeekendDay ? 'hover:shadow-md hover:scale-105' : ''}
           `}
         >
           <div className="flex justify-between items-start mb-1">
-            <span className={`text-sm font-medium ${isTodayDate ? 'text-blue-700' : 'text-gray-900'}`}>
+            <span className={`text-sm font-medium ${isTodayDate ? 'text-indigo-700' : 'text-gray-900'}`}>
               {day}
             </span>
             {isWeekendDay && (
@@ -98,7 +98,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
             <div className="space-y-1">
               <div className="flex items-center gap-1">
                 <div className={`w-2 h-2 rounded-full ${
-                  availableSpots > 0 ? 'bg-green-500' : 'bg-red-500'
+                  availableSpots > 0 ? 'bg-emerald-500' : 'bg-red-500'
                 }`}></div>
                 <span className="text-xs text-gray-600">
                   {availableSpots} places

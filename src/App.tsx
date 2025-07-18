@@ -39,15 +39,15 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Calendar className="h-6 w-6 text-blue-600" />
+              <div className="p-2 bg-indigo-100 rounded-lg">
+                <Calendar className="h-6 w-6 text-indigo-600" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Présence au Bureau</h1>
@@ -56,20 +56,20 @@ function App() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <MapPin className="h-5 w-5 text-blue-600" />
-                  <span className="font-semibold text-blue-900">Places disponibles</span>
+                  <MapPin className="h-5 w-5 text-indigo-600" />
+                  <span className="font-semibold text-indigo-900">Places disponibles</span>
                 </div>
-                <p className="text-sm text-blue-700">12 places assises par jour</p>
+                <p className="text-sm text-indigo-700">12 places assises par jour</p>
               </div>
               
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-green-600" />
-                  <span className="font-semibold text-green-900">Équipe interne</span>
+                  <Users className="h-5 w-5 text-emerald-600" />
+                  <span className="font-semibold text-emerald-900">Équipe interne</span>
                 </div>
-                <p className="text-sm text-green-700">8-9 personnes présentes</p>
+                <p className="text-sm text-emerald-700">8-9 personnes présentes</p>
               </div>
               
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">

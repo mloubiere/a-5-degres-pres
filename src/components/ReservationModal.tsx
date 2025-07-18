@@ -48,8 +48,8 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Calendar className="h-6 w-6 text-blue-600" />
+              <div className="p-2 bg-indigo-100 rounded-lg">
+                <Calendar className="h-6 w-6 text-indigo-600" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">Réserver ma place</h2>
@@ -65,15 +65,15 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
           </div>
 
           <div className="space-y-4 mb-6">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <MapPin className="h-5 w-5 text-blue-600" />
-                <span className="font-semibold text-blue-900">Disponibilité</span>
+                <MapPin className="h-5 w-5 text-indigo-600" />
+                <span className="font-semibold text-indigo-900">Disponibilité</span>
               </div>
-              <p className="text-sm text-blue-700">
+              <p className="text-sm text-indigo-700">
                 {availableSpots > 0 ? (
                   <>
-                    <span className="font-semibold text-green-600">{availableSpots} places disponibles</span>
+                    <span className="font-semibold text-emerald-600">{availableSpots} places disponibles</span>
                     {availableSpots === 1 ? ' restante' : ' restantes'}
                   </>
                 ) : (
