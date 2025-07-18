@@ -79,14 +79,14 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           onClick={() => !isPast && !isWeekendDay && onDateClick(date)}
           className={`
             h-24 border border-gray-200 p-2 cursor-pointer transition-all duration-200
-            ${isTodayDate ? 'bg-indigo-50 border-indigo-300' : 'bg-white hover:bg-gray-50'}
+            ${isTodayDate ? 'bg-primary-50 border-primary-300' : 'bg-white hover:bg-gray-50'}
             ${isPast ? 'bg-gray-100 cursor-not-allowed opacity-50' : ''}
             ${isWeekendDay ? 'bg-gray-50 cursor-not-allowed' : ''}
             ${!isPast && !isWeekendDay ? 'hover:shadow-md hover:scale-105' : ''}
           `}
         >
           <div className="flex justify-between items-start mb-1">
-            <span className={`text-sm font-medium ${isTodayDate ? 'text-indigo-700' : 'text-gray-900'}`}>
+            <span className={`text-sm font-medium ${isTodayDate ? 'text-primary-700' : 'text-secondary-900'}`}>
               {day}
             </span>
             {isWeekendDay && (
@@ -98,7 +98,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
             <div className="space-y-1">
               <div className="flex items-center gap-1">
                 <div className={`w-2 h-2 rounded-full ${
-                  availableSpots > 0 ? 'bg-emerald-500' : 'bg-red-500'
+                  availableSpots > 0 ? 'bg-success-500' : 'bg-red-500'
                 }`}></div>
                 <span className="text-xs text-gray-600">
                   {availableSpots} places
@@ -107,8 +107,8 @@ const CalendarView: React.FC<CalendarViewProps> = ({
               
               {reservations.length > 0 && (
                 <div className="flex items-center gap-1">
-                  <Users className="h-3 w-3 text-gray-400" />
-                  <span className="text-xs text-gray-500">
+                  <Users className="h-3 w-3 text-secondary-400" />
+                  <span className="text-xs text-secondary-500">
                     {reservations.length} réservé{reservations.length > 1 ? 's' : ''}
                   </span>
                 </div>
@@ -134,8 +134,8 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           </button>
           
           <div className="flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5 text-gray-600" />
-            <h2 className="text-lg font-semibold text-gray-900">
+            <CalendarIcon className="h-5 w-5 text-secondary-600" />
+            <h2 className="text-lg font-semibold text-secondary-900">
               {months[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h2>
           </div>
@@ -151,7 +151,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
 
       <div className="grid grid-cols-7 gap-0">
         {daysOfWeek.map(day => (
-          <div key={day} className="bg-gray-100 p-3 text-center text-sm font-medium text-gray-700 border-b border-gray-200">
+          <div key={day} className="bg-secondary-100 p-3 text-center text-sm font-medium text-secondary-700 border-b border-secondary-200">
             {day}
           </div>
         ))}
