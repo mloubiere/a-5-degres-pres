@@ -41,7 +41,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+      <div className="min-h-screen" style={{ backgroundColor: '#fbf0e5' }}>
         <Header />
         <LoadingSpinner />
       </div>
@@ -50,7 +50,7 @@ function App() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+      <div className="min-h-screen" style={{ backgroundColor: '#fbf0e5' }}>
         <Header />
         <ErrorMessage message={error} />
       </div>
@@ -58,7 +58,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+    <div className="min-h-screen" style={{ backgroundColor: '#fbf0e5' }}>
       <Header />
       
       <main className="container mx-auto px-4 py-8">
