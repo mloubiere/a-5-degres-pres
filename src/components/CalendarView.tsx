@@ -144,11 +144,11 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           {!isPast && (
             <div className="space-y-1">
               {reservations.length > 0 && (
-                <div className="flex items-center gap-1">
+                <div className="space-y-1">
                   <Users className="h-4 w-4 text-secondary-400" />
-                  <span className="text-xs text-secondary-500">
+                  <div className="text-xs text-secondary-500">
                     {reservations.length} réservé{reservations.length > 1 ? 's' : ''}
-                  </span>
+                  </div>
                 </div>
               )}
             </div>
