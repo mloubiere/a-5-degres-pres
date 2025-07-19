@@ -132,21 +132,17 @@ const CalendarView: React.FC<CalendarViewProps> = ({
             <span className={`text-sm font-medium ${isTodayDate ? 'text-primary-700' : 'text-secondary-900'}`}>
               {day}
             </span>
+            {!isPast && (
+              <div className={`w-2 h-2 rounded-full ${
+                availableSpots === 0 ? 'bg-red-500' : 
+                availableSpots < 5 ? 'bg-accent-400' : 
+                'bg-success-500'
+              }`}></div>
+            )}
           </div>
           
           {!isPast && (
             <div className="space-y-1">
-              <div className="flex items-center gap-1">
-                <div className={`w-2 h-2 rounded-full ${
-                  availableSpots === 0 ? 'bg-red-500' : 
-                  availableSpots < 5 ? 'bg-accent-400' : 
-                  'bg-success-500'
-                }`}></div>
-                <span className="text-xs text-gray-600">
-                  {availableSpots} places
-                </span>
-              </div>
-              
               {reservations.length > 0 && (
                 <div className="flex items-center gap-1">
                   <Users className="h-3 w-3 text-secondary-400" />
