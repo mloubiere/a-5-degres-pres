@@ -6,7 +6,7 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center gap-3">
           <img 
-            src="https://www.5degres.com/wp-content/uploads/2024/02/5D-Logo-2.jpeg.png" 
+            src="public/images/logo5D_only.png" 
             alt="5 Degrés Logo" 
             className="h-12 w-auto"
           />
