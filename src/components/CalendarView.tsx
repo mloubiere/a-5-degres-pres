@@ -145,7 +145,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
             <div className="space-y-1">
               {reservations.length > 0 && (
                 <div className="flex items-center gap-1">
-                  <Users className="h-3 w-3 text-secondary-400" />
+                  <Users className="h-4 w-4 text-secondary-400" />
                   <span className="text-xs text-secondary-500">
                     {reservations.length} réservé{reservations.length > 1 ? 's' : ''}
                   </span>
