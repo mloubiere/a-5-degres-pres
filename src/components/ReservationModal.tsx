@@ -8,6 +8,7 @@ interface ReservationModalProps {
   reservations: Reservation[];
   onClose: () => void;
   onReserve: (date: Date, name: string) => void;
+  hasReservation: (name: string, date: Date) => boolean;
 }
 
 const ReservationModal: React.FC<ReservationModalProps> = ({
@@ -15,22 +16,38 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
   availableSpots,
   reservations,
   onClose,
-  onReserve
+  onReserve,
+  hasReservation
 }) => {
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [userHasReservation, setUserHasReservation] = useState(false);
+
+  // Vérifier si l'utilisateur a déjà une réservation quand le nom change
+  React.useEffect(() => {
+    if (name.trim()) {
+      setUserHasReservation(hasReservation(name.trim(), date));
+    } else {
+      setUserHasReservation(false);
+    }
+  }, [name, date, hasReservation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
     
+    setError(null);
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    onReserve(date, name.trim());
-    setIsSubmitting(false);
+    try {
+      await onReserve(date, name.trim());
+      // Le modal sera fermé par le parent en cas de succès
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur lors de la réservation');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formatDate = (date: Date) => {
@@ -111,6 +128,26 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
             )}
           </div>
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-red-500 rounded-full flex-shrink-0"></div>
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            </div>
+          )}
+
+          {userHasReservation && (
+            <div className="bg-accent-50 border border-accent-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-accent-400 rounded-full flex-shrink-0"></div>
+                <p className="text-sm text-accent-700">
+                  Vous avez déjà une réservation pour cette date.
+                </p>
+              </div>
+            </div>
+          )}
+
           {availableSpots > 0 ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -130,10 +167,10 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               
               <button
                 type="submit"
-                disabled={!name.trim() || isSubmitting}
+                disabled={!name.trim() || isSubmitting || userHasReservation}
                 className={`
                   w-full px-4 py-2 rounded-lg font-medium transition-all duration-200
-                  ${!name.trim() || isSubmitting
+                  ${!name.trim() || isSubmitting || userHasReservation
                     ? 'bg-secondary-300 text-secondary-500 cursor-not-allowed'
                     : 'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg'
                   }
@@ -147,7 +184,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 ) : (
                   <div className="flex items-center justify-center gap-2">
                     <UserPlus className="h-4 w-4" />
-                    Je réserve ma place
+                    {userHasReservation ? 'Déjà réservé' : 'Je réserve ma place'}
                   </div>
                 )}
               </button>

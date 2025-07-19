@@ -3,17 +3,26 @@ import { ChevronLeft, ChevronRight, Users, Calendar as CalendarIcon } from 'luci
 import { Reservation } from '../types/presence';
 
 interface CalendarViewProps {
+  currentDate: Date;
   onDateClick: (date: Date) => void;
+  onMonthChange: (date: Date) => void;
   getAvailableSpots: (date: Date) => number;
   getReservations: (date: Date) => Reservation[];
 }
 
 const CalendarView: React.FC<CalendarViewProps> = ({ 
+  currentDate: propCurrentDate,
   onDateClick, 
+  onMonthChange,
   getAvailableSpots, 
   getReservations 
 }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(propCurrentDate);
+
+  // Synchroniser avec la prop currentDate
+  React.useEffect(() => {
+    setCurrentDate(propCurrentDate);
+  }, [propCurrentDate]);
 
   const daysOfWeek = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
   const months = [
@@ -36,11 +45,15 @@ const CalendarView: React.FC<CalendarViewProps> = ({
   };
 
   const previousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    setCurrentDate(newDate);
+    onMonthChange(newDate);
   };
 
   const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    setCurrentDate(newDate);
+    onMonthChange(newDate);
   };
 
   const isToday = (date: Date) => {
