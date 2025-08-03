@@ -122,18 +122,18 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           key={day}
           onClick={() => !isPast && onDateClick(date)}
           className={`
-            h-24 border border-gray-200 p-2 cursor-pointer transition-all duration-200
+            min-h-[80px] md:h-24 border border-gray-200 p-1 md:p-2 cursor-pointer transition-all duration-200 flex flex-col
             ${isTodayDate ? 'bg-primary-50 border-primary-300' : 'bg-white hover:bg-gray-50'}
             ${isPast ? 'bg-gray-100 cursor-not-allowed opacity-50' : ''}
             ${!isPast ? 'hover:shadow-md hover:scale-105' : ''}
           `}
         >
           <div className="flex justify-between items-start mb-1">
-            <span className={`text-sm font-medium ${isTodayDate ? 'text-primary-700' : 'text-secondary-900'}`}>
+            <span className={`text-xs md:text-sm font-medium ${isTodayDate ? 'text-primary-700' : 'text-secondary-900'}`}>
               {day}
             </span>
             {!isPast && (
-              <div className={`w-2 h-2 rounded-full ${
+              <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${
                 availableSpots === 0 ? 'bg-red-500' : 
                 availableSpots < 5 ? 'bg-accent-400' : 
                 'bg-success-500'
@@ -142,11 +142,11 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           </div>
           
           {!isPast && (
-            <div className="space-y-1">
+            <div className="space-y-1 flex-1 flex flex-col justify-center">
               {reservations.length > 0 && (
-                <div className="space-y-1">
-                  <Users className="h-4 w-4 text-secondary-400" />
-                  <div className="text-xs text-secondary-500">
+                <div className="space-y-0.5 md:space-y-1 text-center">
+                  <Users className="h-3 w-3 md:h-4 md:w-4 text-secondary-400 mx-auto" />
+                  <div className="text-[10px] md:text-xs text-secondary-500">
                     {reservations.length} réservé{reservations.length > 1 ? 's' : ''}
                   </div>
                 </div>
@@ -163,7 +163,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden h-full flex flex-col">
       <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <button
@@ -175,7 +175,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           
           <div className="flex items-center gap-2">
             <CalendarIcon className="h-5 w-5 text-secondary-600" />
-            <h2 className="text-lg font-semibold text-secondary-900">
+            <h2 className="text-base md:text-lg font-semibold text-secondary-900">
               {months[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h2>
           </div>
@@ -189,9 +189,9 @@ const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-0">
+      <div className="grid grid-cols-5 gap-0 flex-1">
         {daysOfWeek.map(day => (
-          <div key={day} className="bg-secondary-100 p-3 text-center text-sm font-medium text-secondary-700 border-b border-secondary-200">
+          <div key={day} className="bg-secondary-100 p-2 md:p-3 text-center text-xs md:text-sm font-medium text-secondary-700 border-b border-secondary-200">
             {day}
           </div>
         ))}
