@@ -62,8 +62,8 @@ function App() {
       <Header />
       
       <main className="flex-1 flex flex-col container mx-auto px-2 md:px-4 py-4 md:py-8">
-        <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
-          <div className="flex-1 bg-white rounded-xl shadow-lg mb-4 md:mb-8 overflow-hidden">
+        <div className="flex flex-col max-w-4xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-lg mb-4 md:mb-8 overflow-hidden">
             <CalendarView
               currentDate={currentDate}
               onDateClick={handleDateClick}
