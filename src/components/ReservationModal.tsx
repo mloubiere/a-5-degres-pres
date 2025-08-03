@@ -65,8 +65,8 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary-100 rounded-lg">
-                <Calendar className="h-6 w-6 text-primary-600" />
+              <div className="p-2 rounded-lg" style={{ backgroundColor: '#005953' }}>
+                <Calendar className="h-6 w-6" style={{ color: '#ffffff' }} />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-secondary-900">Réserver ma place</h2>
