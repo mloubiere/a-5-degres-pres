@@ -142,7 +142,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-accent-400 rounded-full flex-shrink-0"></div>
                 <p className="text-sm text-accent-700">
-                  Vous avez déjà une réservation pour cette date.
+                  Il existe déjà une réservation avec ce nom. Veuillez modifier votre réservation.
                 </p>
               </div>
             </div>
