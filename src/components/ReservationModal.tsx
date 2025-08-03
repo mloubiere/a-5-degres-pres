@@ -152,7 +152,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-secondary-700 mb-2">
-                  Votre nom
+                  Prénom et nom
                 </label>
                 <input
                   type="text"
@@ -160,7 +160,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Entrez votre nom"
+                  placeholder="ex : Mathieu Loubière"
                   required
                 />
               </div>
