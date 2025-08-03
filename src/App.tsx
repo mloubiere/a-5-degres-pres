@@ -58,12 +58,12 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#fbf0e5' }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fbf0e5' }}>
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-xl shadow-lg mb-8">
+      <main className="flex-1 flex flex-col container mx-auto px-2 md:px-4 py-4 md:py-8">
+        <div className="flex flex-col max-w-4xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-lg mb-4 md:mb-8 overflow-hidden">
             <CalendarView
               currentDate={currentDate}
               onDateClick={handleDateClick}
