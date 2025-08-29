@@ -23,11 +23,11 @@ const Snackbar: React.FC<SnackbarProps> = ({
   useEffect(() => {
     if (isVisible) {
       setShow(true);
-      setShow(true);
+      
       const timer = setTimeout(() => {
         setShow(false);
         setTimeout(onClose, 300); // Attendre la fin de l'animation
-        setTimeout(onClose, 300); // Attendre la fin de l'animation
+        
       }, duration);
 
       return () => clearTimeout(timer);
@@ -93,4 +93,3 @@ const Snackbar: React.FC<SnackbarProps> = ({
 
 export default Snackbar;
 
-export default Snackbar
