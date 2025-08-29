@@ -55,28 +55,5 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onAnimationComplete }) 
     </div>
   );
 };
-          <Lottie
-            animationData={animationData}
-            loop={false}
-            autoplay={true}
-            style={{ width: 200, height: 200 }}
-            onComplete={handleAnimationComplete}
-          />
-        </div>
-        <p className="text-lg font-medium text-secondary-700 animate-pulse">
-          Chargement des données en cours
-        </p>
-        <div className="mt-4 flex justify-center">
-          <div className="flex space-x-1">
-            <div className="w-2 h-2 bg-primary-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-primary-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-primary-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
-export default LoadingSpinner;
 export default LoadingSpinner;
