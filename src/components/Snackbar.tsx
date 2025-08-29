@@ -18,11 +18,15 @@ const Snackbar: React.FC<SnackbarProps> = ({
 }) => {
   const [show, setShow] = useState(false);
 
+  const [show, setShow] = useState(false);
+
   useEffect(() => {
     if (isVisible) {
       setShow(true);
+      setShow(true);
       const timer = setTimeout(() => {
         setShow(false);
+        setTimeout(onClose, 300); // Attendre la fin de l'animation
         setTimeout(onClose, 300); // Attendre la fin de l'animation
       }, duration);
 
@@ -37,8 +41,16 @@ const Snackbar: React.FC<SnackbarProps> = ({
     setTimeout(onClose, 300);
   };
 
+  const handleClose = () => {
+    setShow(false);
+    setTimeout(onClose, 300);
+  };
+
   return (
     <div className={`
+      fixed top-16 md:top-20 left-0 right-0 z-50 transition-all duration-300 ease-in-out
+      ${show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}
+    `}>
       fixed top-16 md:top-20 left-0 right-0 z-50 transition-all duration-300 ease-in-out
       ${show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}
     `}>
