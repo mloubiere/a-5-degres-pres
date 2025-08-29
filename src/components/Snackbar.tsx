@@ -18,7 +18,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
 }) => {
   const [show, setShow] = useState(false);
 
-  const [show, setShow] = useState(false);
+ 
 
   useEffect(() => {
     if (isVisible) {
