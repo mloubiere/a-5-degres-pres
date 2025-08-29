@@ -39,11 +39,11 @@ const Snackbar: React.FC<SnackbarProps> = ({
 
   return (
     <div className={`
-      fixed top-16 md:top-20 left-4 right-4 z-50 transition-all duration-300 ease-in-out
+      fixed top-16 md:top-20 left-0 right-0 z-50 transition-all duration-300 ease-in-out
       ${show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}
     `}>
       <div className={`
-        mx-auto max-w-md rounded-lg shadow-lg border-l-4 p-4 flex items-center gap-3
+        w-full shadow-lg border-l-4 p-4 flex items-center gap-3
         ${type === 'success' 
           ? 'bg-success-50 border-success-500 text-success-800' 
           : 'bg-red-50 border-red-500 text-red-800'
@@ -60,8 +60,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
         <div className="flex-1">
           <p className={`
             text-sm font-medium
-            text-center md:text-center
-            sm:text-left
+            text-left md:text-center
           `}>
             {message}
           </p>
