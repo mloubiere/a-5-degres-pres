@@ -96,3 +96,5 @@ const Snackbar: React.FC<SnackbarProps> = ({
 };
 
 export default Snackbar;
+
+export default Snackbar
