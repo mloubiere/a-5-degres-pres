@@ -10,6 +10,7 @@ function App() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
 
   const {
     loading,
@@ -23,6 +24,10 @@ function App() {
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
     setIsModalOpen(true);
+  };
+
+  const handleAnimationComplete = () => {
+    setShowLoadingScreen(false);
   };
 
   const handleReservation = async (date: Date, name: string) => {
@@ -39,11 +44,21 @@ function App() {
     setCurrentDate(date);
   };
 
+  // Afficher l'écran de chargement avec animation au démarrage
+  if (showLoadingScreen) {
+    return (
+      <LoadingSpinner onAnimationComplete={handleAnimationComplete} />
+    );
+  }
+
+  // Afficher le spinner normal pendant les opérations de données
   if (loading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: '#fbf0e5' }}>
-        <Header />
-        <LoadingSpinner />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#fbf0e5' }}>
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-secondary-600 font-medium">Chargement...</p>
+        </div>
       </div>
     );
   }
