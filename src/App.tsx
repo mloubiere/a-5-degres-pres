@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import CalendarView from './components/CalendarView';
 import Header from './components/Header';
 import ReservationModal from './components/ReservationModal';
+import Snackbar from './components/Snackbar';
 import { useReservations } from './hooks/useReservations';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorMessage from './components/ErrorMessage';
@@ -10,6 +11,16 @@ function App() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+  const [snackbar, setSnackbar] = useState<{
+    isVisible: boolean;
+    message: string;
+    type: 'success' | 'error';
+  }>({
+    isVisible: false,
+    message: '',
+    type: 'success'
+  });
 
   const {
     loading,
@@ -25,10 +36,19 @@ function App() {
     setIsModalOpen(true);
   };
 
+  const handleAnimationComplete = () => {
+    setShowLoadingScreen(false);
+  };
+
   const handleReservation = async (date: Date, name: string) => {
     try {
       await createReservation(name, date);
       setIsModalOpen(false);
+      setSnackbar({
+        isVisible: true,
+        message: 'Votre réservation de place a été validée',
+        type: 'success'
+      });
     } catch (err) {
       // L'erreur sera gérée par le composant ReservationModal
       throw err;
@@ -39,11 +59,25 @@ function App() {
     setCurrentDate(date);
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, isVisible: false }));
+  };
+
+  // Afficher l'écran de chargement avec animation au démarrage
+  if (showLoadingScreen) {
+    return (
+      <LoadingSpinner onAnimationComplete={handleAnimationComplete} />
+    );
+  }
+
+  // Afficher le spinner normal pendant les opérations de données
   if (loading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: '#fbf0e5' }}>
-        <Header />
-        <LoadingSpinner />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#fbf0e5' }}>
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-secondary-600 font-medium">Chargement...</p>
+        </div>
       </div>
     );
   }
@@ -85,6 +119,13 @@ function App() {
           hasReservation={hasReservation}
         />
       )}
+
+      <Snackbar
+        message={snackbar.message}
+        type={snackbar.type}
+        isVisible={snackbar.isVisible}
+        onClose={handleCloseSnackbar}
+      />
     </div>
   );
 }
