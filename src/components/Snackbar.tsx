@@ -47,9 +47,6 @@ const Snackbar: React.FC<SnackbarProps> = ({
       fixed top-16 md:top-20 left-0 right-0 z-50 transition-all duration-300 ease-in-out
       ${show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}
     `}>
-      fixed top-16 md:top-20 left-0 right-0 z-50 transition-all duration-300 ease-in-out
-      ${show ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}
-    `}>
       <div className={`
         w-full shadow-lg border-l-4 p-4 flex items-center gap-3
         ${type === 'success' 
