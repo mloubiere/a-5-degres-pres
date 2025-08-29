@@ -41,10 +41,6 @@ const Snackbar: React.FC<SnackbarProps> = ({
     setTimeout(onClose, 300);
   };
 
-  const handleClose = () => {
-    setShow(false);
-    setTimeout(onClose, 300);
-  };
 
   return (
     <div className={`
