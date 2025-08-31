@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Lottie from 'lottie-react';
-import animationData from '../../public/Animation LottieFiles.json';
+import animationData from '../assets/Animation LottieFiles.json';
 import Header from './Header';
 
 interface LoadingSpinnerProps {
