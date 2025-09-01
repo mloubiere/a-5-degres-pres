@@ -8,7 +8,6 @@ interface ReservationModalProps {
   reservations: Reservation[];
   onClose: () => void;
   onReserve: (date: Date, name: string) => void;
-  hasReservation: (name: string, date: Date) => boolean;
 }
 
 const ReservationModal: React.FC<ReservationModalProps> = ({
@@ -16,22 +15,11 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
   availableSpots,
   reservations,
   onClose,
-  onReserve,
-  hasReservation
+  onReserve
 }) => {
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [userHasReservation, setUserHasReservation] = useState(false);
-
-  // Vérifier si l'utilisateur a déjà une réservation quand le nom change
-  React.useEffect(() => {
-    if (name.trim()) {
-      setUserHasReservation(hasReservation(name.trim(), date));
-    } else {
-      setUserHasReservation(false);
-    }
-  }, [name, date, hasReservation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,17 +125,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
             </div>
           )}
 
-          {userHasReservation && (
-            <div className="bg-accent-50 border border-accent-200 rounded-lg p-4 mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-accent-400 rounded-full flex-shrink-0"></div>
-                <p className="text-sm text-accent-700">
-                  Il existe déjà une réservation avec ce nom. Veuillez modifier votre réservation.
-                </p>
-              </div>
-            </div>
-          )}
-
           {availableSpots > 0 ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -167,10 +144,10 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               
               <button
                 type="submit"
-                disabled={!name.trim() || isSubmitting || userHasReservation}
+                disabled={!name.trim() || isSubmitting}
                 className={`
                   w-full px-4 py-2 rounded-lg font-medium transition-all duration-200
-                  ${!name.trim() || isSubmitting || userHasReservation
+                  ${!name.trim() || isSubmitting
                     ? 'bg-secondary-300 text-secondary-500 cursor-not-allowed'
                     : 'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg'
                   }
@@ -184,7 +161,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 ) : (
                   <div className="flex items-center justify-center gap-2">
                     <UserPlus className="h-4 w-4" />
-                    {userHasReservation ? 'Déjà réservé' : 'Je réserve ma place'}
+                    Je réserve ma place
                   </div>
                 )}
               </button>
