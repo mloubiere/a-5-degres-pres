@@ -90,6 +90,39 @@ export class ReservationService {
   }
 
   // Modifier une réservation (changer le nom)
+  static async countReservationsByDate(date: Date): Promise<number> {
+    const dateString = date.toISOString().split('T')[0];
+
+    const { count, error } = await supabase
+      .from('reservations')
+      .select('*', { count: 'exact', head: true })
+      .eq('date', dateString);
+
+    if (error) {
+      console.error('Erreur lors du comptage des réservations:', error);
+      return 0;
+    }
+
+    return count || 0;
+  }
+
+  // Récupérer toutes les réservations d'un utilisateur
+  static async getUserReservations(name: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('*')
+      .eq('name', name.trim())
+      .order('date', { ascending: true });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des réservations utilisateur:', error);
+      throw new Error('Impossible de récupérer vos réservations');
+    }
+
+    return data || [];
+  }
+
+  // Modifier une réservation (changer le nom)
   static async updateReservation(oldName: string, newName: string, date: Date): Promise<void> {
     const dateString = date.toISOString().split('T')[0];
 
@@ -106,60 +139,5 @@ export class ReservationService {
       console.error('Erreur lors de la modification de la réservation:', error);
       throw new Error('Impossible de modifier la réservation');
     }
-  }
-
-  // Récupérer une réservation spécifique par nom et date
-  static async getReservationByNameAndDate(name: string, date: Date): Promise<Reservation | null> {
-    const dateString = date.toISOString().split('T')[0];
-
-    const { data, error } = await supabase
-      .from('reservations')
-      .select('name, date')
-      .eq('name', name.trim())
-      .eq('date', dateString)
-      .single();
-
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-      console.error('Erreur lors de la récupération de la réservation:', error);
-      return null;
-    }
-
-    return data;
-  }
-
-  // Vérifier si une personne a déjà une réservation pour une date
-  static async hasReservation(name: string, date: Date): Promise<boolean> {
-    const dateString = date.toISOString().split('T')[0];
-
-    const { data, error } = await supabase
-      .from('reservations')
-      .select('id')
-      .eq('name', name.trim())
-      .eq('date', dateString)
-      .single();
-
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-      console.error('Erreur lors de la vérification de la réservation:', error);
-      return false;
-    }
-
-    return !!data;
-  }
-
-  // Compter le nombre de réservations pour une date
-  static async countReservationsByDate(date: Date): Promise<number> {
-    const dateString = date.toISOString().split('T')[0];
-
-    const { count, error } = await supabase
-      .from('reservations')
-      .select('*', { count: 'exact', head: true })
-      .eq('date', dateString);
-
-    if (error) {
-      console.error('Erreur lors du comptage des réservations:', error);
-      return 0;
-    }
-
-    return count || 0;
   }
 }

@@ -41,38 +41,6 @@ export const useReservations = (currentDate: Date) => {
   }, [loadReservations]);
 
   // Supprimer une réservation
-  const deleteReservation = useCallback(async (name: string, date: Date) => {
-    try {
-      await ReservationService.deleteReservation(name, date);
-      // Recharger les réservations après suppression
-      await loadReservations();
-    } catch (err) {
-      throw err; // Propager l'erreur pour que le composant puisse l'afficher
-    }
-  }, [loadReservations]);
-
-  // Modifier une réservation
-  const updateReservation = useCallback(async (oldName: string, newName: string, date: Date) => {
-    try {
-      await ReservationService.updateReservation(oldName, newName, date);
-      // Recharger les réservations après modification
-      await loadReservations();
-    } catch (err) {
-      throw err; // Propager l'erreur pour que le composant puisse l'afficher
-    }
-  }, [loadReservations]);
-
-  // Obtenir une réservation spécifique
-  const getReservationByName = useCallback(async (name: string, date: Date) => {
-    try {
-      return await ReservationService.getReservationByNameAndDate(name, date);
-    } catch (err) {
-      console.error('Erreur lors de la récupération de la réservation:', err);
-      return null;
-    }
-  }, []);
-
-  // Obtenir les réservations pour une date
   const getReservations = useCallback((date: Date): Reservation[] => {
     const dateKey = date.toISOString().split('T')[0];
     return reservationsByDate[dateKey] || [];
@@ -85,22 +53,13 @@ export const useReservations = (currentDate: Date) => {
   }, [getReservations]);
 
   // Vérifier si une personne a une réservation pour une date
-  const hasReservation = useCallback((name: string, date: Date): boolean => {
-    const reservations = getReservations(date);
-    return reservations.some(r => r.name.toLowerCase() === name.toLowerCase());
-  }, [getReservations]);
-
   return {
     reservationsByDate,
     loading,
     error,
     createReservation,
-    deleteReservation,
-    updateReservation,
-    getReservationByName,
     getReservations,
     getAvailableSpots,
-    hasReservation,
     refreshReservations: loadReservations
   };
 };

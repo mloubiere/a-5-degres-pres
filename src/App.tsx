@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import CalendarView from './components/CalendarView';
 import Header from './components/Header';
 import ReservationModal from './components/ReservationModal';
+import MyReservations from './components/MyReservations';
 import Snackbar from './components/Snackbar';
 import { useReservations } from './hooks/useReservations';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -13,6 +14,8 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [showLoadingAnimation, setShowLoadingAnimation] = useState(true);
+  const [activeTab, setActiveTab] = useState<'calendar' | 'reservations'>('calendar');
+  const [userName, setUserName] = useState('');
   const [snackbar, setSnackbar] = useState<{
     isVisible: boolean;
     message: string;
@@ -27,11 +30,9 @@ function App() {
     loading,
     error,
     createReservation,
-    updateReservation,
-    deleteReservation,
     getReservations,
     getAvailableSpots,
-    hasReservation
+    refreshReservations
   } = useReservations(currentDate);
 
   const handleDateClick = (date: Date) => {
@@ -62,40 +63,16 @@ function App() {
     }
   };
 
-  const handleUpdateReservation = async (oldName: string, newName: string, date: Date) => {
-    try {
-      await updateReservation(oldName, newName, date);
-      setIsModalOpen(false);
-      setSnackbar({
-        isVisible: true,
-        message: 'Votre réservation a été modifiée avec succès',
-        type: 'success'
-      });
-    } catch (err) {
-      throw err;
-    }
-  };
-
-  const handleDeleteReservation = async (name: string, date: Date) => {
-    try {
-      await deleteReservation(name, date);
-      setIsModalOpen(false);
-      setSnackbar({
-        isVisible: true,
-        message: 'Votre réservation a été supprimée',
-        type: 'success'
-      });
-    } catch (err) {
-      throw err;
-    }
-  };
-
   const handleMonthChange = (date: Date) => {
     setCurrentDate(date);
   };
 
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, isVisible: false }));
+  };
+
+  const handleReservationChange = () => {
+    refreshReservations();
   };
 
   return (
@@ -131,6 +108,40 @@ function App() {
             <ErrorMessage message={error} />
           ) : (
             <div className="flex flex-col max-w-4xl mx-auto w-full">
+              {/* Navigation par onglets */}
+              <div className="bg-white rounded-xl shadow-lg mb-4 overflow-hidden">
+                <div className="border-b border-gray-200">
+                  <nav className="flex">
+                    <button
+                      onClick={() => setActiveTab('calendar')}
+                      className={`
+                        flex-1 px-4 py-3 text-sm font-medium transition-colors duration-200
+                        ${activeTab === 'calendar'
+                          ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+                          : 'text-secondary-600 hover:text-secondary-900 hover:bg-gray-50'
+                        }
+                      `}
+                    >
+                      📅 Calendrier
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('reservations')}
+                      className={`
+                        flex-1 px-4 py-3 text-sm font-medium transition-colors duration-200
+                        ${activeTab === 'reservations'
+                          ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+                          : 'text-secondary-600 hover:text-secondary-900 hover:bg-gray-50'
+                        }
+                      `}
+                    >
+                      📋 Mes réservations
+                    </button>
+                  </nav>
+                </div>
+              </div>
+
+              {/* Contenu selon l'onglet actif */}
+              {activeTab === 'calendar' ? (
               <div className="bg-white rounded-xl shadow-lg mb-4 md:mb-8 overflow-hidden">
                 <CalendarView
                   currentDate={currentDate}
@@ -140,6 +151,13 @@ function App() {
                   getReservations={getReservations}
                 />
               </div>
+              ) : (
+                <MyReservations
+                  userName={userName}
+                  onUserNameChange={setUserName}
+                  onReservationChange={handleReservationChange}
+                />
+              )}
             </div>
           )}
         </div>
@@ -152,9 +170,6 @@ function App() {
           reservations={getReservations(selectedDate)}
           onClose={() => setIsModalOpen(false)}
           onReserve={handleReservation}
-          onUpdate={handleUpdateReservation}
-          onDelete={handleDeleteReservation}
-          hasReservation={hasReservation}
         />
       )}
 
