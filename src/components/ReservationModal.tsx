@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Calendar, Users, MapPin, UserPlus } from 'lucide-react';
+import { X, Calendar, Users, MapPin, UserPlus, Edit3, Trash2, Save } from 'lucide-react';
 import { Reservation } from '../types/presence';
 
 interface ReservationModalProps {
@@ -8,6 +8,8 @@ interface ReservationModalProps {
   reservations: Reservation[];
   onClose: () => void;
   onReserve: (date: Date, name: string) => void;
+  onUpdate: (oldName: string, newName: string, date: Date) => void;
+  onDelete: (name: string, date: Date) => void;
   hasReservation: (name: string, date: Date) => boolean;
 }
 
@@ -17,21 +19,36 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
   reservations,
   onClose,
   onReserve,
+  onUpdate,
+  onDelete,
   hasReservation
 }) => {
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userHasReservation, setUserHasReservation] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [originalName, setOriginalName] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Vérifier si l'utilisateur a déjà une réservation quand le nom change
   React.useEffect(() => {
     if (name.trim()) {
-      setUserHasReservation(hasReservation(name.trim(), date));
+      const hasExistingReservation = hasReservation(name.trim(), date);
+      setUserHasReservation(hasExistingReservation);
+      
+      // Si l'utilisateur a une réservation et qu'on n'est pas en mode édition, 
+      // passer en mode édition automatiquement
+      if (hasExistingReservation && !isEditing) {
+        setIsEditing(true);
+        setOriginalName(name.trim());
+      }
     } else {
       setUserHasReservation(false);
+      setIsEditing(false);
+      setOriginalName('');
     }
-  }, [name, date, hasReservation]);
+  }, [name, date, hasReservation, isEditing]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,13 +58,44 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     setIsSubmitting(true);
     
     try {
-      await onReserve(date, name.trim());
+      if (isEditing && originalName) {
+        // Mode modification
+        await onUpdate(originalName, name.trim(), date);
+      } else {
+        // Mode création
+        await onReserve(date, name.trim());
+      }
       // Le modal sera fermé par le parent en cas de succès
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors de la réservation');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleDelete = async () => {
+    if (!originalName) return;
+    
+    setError(null);
+    setIsSubmitting(true);
+    
+    try {
+      await onDelete(originalName, date);
+      // Le modal sera fermé par le parent en cas de succès
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur lors de la suppression');
+    } finally {
+      setIsSubmitting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setName('');
+    setIsEditing(false);
+    setOriginalName('');
+    setUserHasReservation(false);
+    setError(null);
   };
 
   const formatDate = (date: Date) => {
@@ -142,7 +190,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-accent-400 rounded-full flex-shrink-0"></div>
                 <p className="text-sm text-accent-700">
-                  Il existe déjà une réservation avec ce nom. Veuillez modifier votre réservation.
+                  {isEditing ? 'Vous pouvez modifier ou supprimer votre réservation.' : 'Vous avez déjà une réservation pour cette date.'}
                 </p>
               </div>
             </div>
@@ -165,29 +213,79 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 />
               </div>
               
-              <button
-                type="submit"
-                disabled={!name.trim() || isSubmitting || userHasReservation}
-                className={`
-                  w-full px-4 py-2 rounded-lg font-medium transition-all duration-200
-                  ${!name.trim() || isSubmitting || userHasReservation
-                    ? 'bg-secondary-300 text-secondary-500 cursor-not-allowed'
-                    : 'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg'
-                  }
-                `}
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Réservation...
+              {isEditing ? (
+                // Mode édition - Afficher les boutons de gestion
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      disabled={!name.trim() || isSubmitting || name.trim() === originalName}
+                      className={`
+                        flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2
+                        ${!name.trim() || isSubmitting || name.trim() === originalName
+                          ? 'bg-secondary-300 text-secondary-500 cursor-not-allowed'
+                          : 'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg'
+                        }
+                      `}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Modification...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4" />
+                          Modifier
+                        </>
+                      )}
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      disabled={isSubmitting}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Supprimer
+                    </button>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-2">
-                    <UserPlus className="h-4 w-4" />
-                    {userHasReservation ? 'Déjà réservé' : 'Je réserve ma place'}
-                  </div>
-                )}
-              </button>
+                  
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="w-full px-4 py-2 bg-secondary-200 text-secondary-700 rounded-lg hover:bg-secondary-300 transition-colors duration-200"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              ) : (
+                // Mode création - Bouton de réservation normal
+                <button
+                  type="submit"
+                  disabled={!name.trim() || isSubmitting}
+                  className={`
+                    w-full px-4 py-2 rounded-lg font-medium transition-all duration-200
+                    ${!name.trim() || isSubmitting
+                      ? 'bg-secondary-300 text-secondary-500 cursor-not-allowed'
+                      : 'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg'
+                    }
+                  `}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Réservation...
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2">
+                      <UserPlus className="h-4 w-4" />
+                      Je réserve ma place
+                    </div>
+                  )}
+                </button>
+              )}
             </form>
           ) : (
             <div className="text-center">
@@ -203,6 +301,52 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
             </div>
           )}
         </div>
+        
+        {/* Modal de confirmation de suppression */}
+        {showDeleteConfirm && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-xl">
+            <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="p-3 bg-red-100 rounded-full">
+                    <Trash2 className="h-6 w-6 text-red-600" />
+                  </div>
+                </div>
+                
+                <h3 className="text-lg font-semibold text-secondary-900 mb-2">
+                  Supprimer la réservation
+                </h3>
+                
+                <p className="text-secondary-600 mb-6">
+                  Êtes-vous sûr de vouloir supprimer votre réservation pour le {formatDate(date)} ?
+                </p>
+                
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="flex-1 px-4 py-2 bg-secondary-200 text-secondary-700 rounded-lg hover:bg-secondary-300 transition-colors duration-200"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    disabled={isSubmitting}
+                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <>
+                        <Trash2 className="h-4 w-4" />
+                        Supprimer
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

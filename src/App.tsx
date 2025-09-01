@@ -27,6 +27,8 @@ function App() {
     loading,
     error,
     createReservation,
+    updateReservation,
+    deleteReservation,
     getReservations,
     getAvailableSpots,
     hasReservation
@@ -56,6 +58,34 @@ function App() {
       });
     } catch (err) {
       // L'erreur sera gérée par le composant ReservationModal
+      throw err;
+    }
+  };
+
+  const handleUpdateReservation = async (oldName: string, newName: string, date: Date) => {
+    try {
+      await updateReservation(oldName, newName, date);
+      setIsModalOpen(false);
+      setSnackbar({
+        isVisible: true,
+        message: 'Votre réservation a été modifiée avec succès',
+        type: 'success'
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const handleDeleteReservation = async (name: string, date: Date) => {
+    try {
+      await deleteReservation(name, date);
+      setIsModalOpen(false);
+      setSnackbar({
+        isVisible: true,
+        message: 'Votre réservation a été supprimée',
+        type: 'success'
+      });
+    } catch (err) {
       throw err;
     }
   };
@@ -122,6 +152,8 @@ function App() {
           reservations={getReservations(selectedDate)}
           onClose={() => setIsModalOpen(false)}
           onReserve={handleReservation}
+          onUpdate={handleUpdateReservation}
+          onDelete={handleDeleteReservation}
           hasReservation={hasReservation}
         />
       )}

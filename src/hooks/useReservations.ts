@@ -51,6 +51,27 @@ export const useReservations = (currentDate: Date) => {
     }
   }, [loadReservations]);
 
+  // Modifier une réservation
+  const updateReservation = useCallback(async (oldName: string, newName: string, date: Date) => {
+    try {
+      await ReservationService.updateReservation(oldName, newName, date);
+      // Recharger les réservations après modification
+      await loadReservations();
+    } catch (err) {
+      throw err; // Propager l'erreur pour que le composant puisse l'afficher
+    }
+  }, [loadReservations]);
+
+  // Obtenir une réservation spécifique
+  const getReservationByName = useCallback(async (name: string, date: Date) => {
+    try {
+      return await ReservationService.getReservationByNameAndDate(name, date);
+    } catch (err) {
+      console.error('Erreur lors de la récupération de la réservation:', err);
+      return null;
+    }
+  }, []);
+
   // Obtenir les réservations pour une date
   const getReservations = useCallback((date: Date): Reservation[] => {
     const dateKey = date.toISOString().split('T')[0];
@@ -75,6 +96,8 @@ export const useReservations = (currentDate: Date) => {
     error,
     createReservation,
     deleteReservation,
+    updateReservation,
+    getReservationByName,
     getReservations,
     getAvailableSpots,
     hasReservation,

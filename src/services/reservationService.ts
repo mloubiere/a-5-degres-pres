@@ -89,6 +89,44 @@ export class ReservationService {
     }
   }
 
+  // Modifier une réservation (changer le nom)
+  static async updateReservation(oldName: string, newName: string, date: Date): Promise<void> {
+    const dateString = date.toISOString().split('T')[0];
+
+    const { error } = await supabase
+      .from('reservations')
+      .update({ name: newName.trim() })
+      .eq('name', oldName.trim())
+      .eq('date', dateString);
+
+    if (error) {
+      if (error.code === '23505') { // Violation de contrainte unique
+        throw new Error('Une réservation existe déjà avec ce nom pour cette date');
+      }
+      console.error('Erreur lors de la modification de la réservation:', error);
+      throw new Error('Impossible de modifier la réservation');
+    }
+  }
+
+  // Récupérer une réservation spécifique par nom et date
+  static async getReservationByNameAndDate(name: string, date: Date): Promise<Reservation | null> {
+    const dateString = date.toISOString().split('T')[0];
+
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('name, date')
+      .eq('name', name.trim())
+      .eq('date', dateString)
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+      console.error('Erreur lors de la récupération de la réservation:', error);
+      return null;
+    }
+
+    return data;
+  }
+
   // Vérifier si une personne a déjà une réservation pour une date
   static async hasReservation(name: string, date: Date): Promise<boolean> {
     const dateString = date.toISOString().split('T')[0];
