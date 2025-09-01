@@ -5,31 +5,26 @@ import Header from './Header';
 
 interface LoadingSpinnerProps {
   onAnimationComplete?: () => void;
+  hideHeader?: boolean;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onAnimationComplete }) => {
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onAnimationComplete, hideHeader = false }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
 
   const handleAnimationComplete = () => {
     setAnimationComplete(true);
-    // Démarrer le fondu
-    setFadeOut(true);
-    // Délai pour le fondu de 1,5s
+    // Délai court avant de déclencher la transition
     setTimeout(() => {
       onAnimationComplete?.();
-    }, 1500);
+    }, 300);
   };
 
 
   return (
-    <div 
-      className={`fixed inset-0 z-50 transition-opacity duration-1500 ${fadeOut ? 'opacity-0' : 'opacity-100'}`} 
-      style={{ backgroundColor: '#fbf0e5' }}
-    >
-      <Header />
+    <div className="w-full h-full">
+      {!hideHeader && <Header />}
       
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+      <div className={`flex items-center justify-center ${hideHeader ? 'h-full' : 'min-h-[calc(100vh-80px)]'}`}>
         <div className="text-center">
           <div className="mb-6" style={{ marginLeft: '45px' }}>
             <Lottie

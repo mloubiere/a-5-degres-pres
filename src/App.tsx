@@ -11,7 +11,8 @@ function App() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [showLoadingAnimation, setShowLoadingAnimation] = useState(true);
   const [snackbar, setSnackbar] = useState<{
     isVisible: boolean;
     message: string;
@@ -37,7 +38,11 @@ function App() {
   };
 
   const handleAnimationComplete = () => {
-    setShowLoadingScreen(false);
+    setShowLoadingAnimation(false);
+    // Attendre un peu avant de masquer complètement le loading initial
+    setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 500);
   };
 
   const handleReservation = async (date: Date, name: string) => {
@@ -63,49 +68,50 @@ function App() {
     setSnackbar(prev => ({ ...prev, isVisible: false }));
   };
 
-  // Afficher l'écran de chargement avec animation au démarrage
-  if (showLoadingScreen) {
-    return (
-      <LoadingSpinner onAnimationComplete={handleAnimationComplete} />
-    );
-  }
-
-  // Afficher le spinner normal pendant les opérations de données
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#fbf0e5' }}>
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-secondary-600 font-medium">Chargement...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen" style={{ backgroundColor: '#fbf0e5' }}>
-        <Header />
-        <ErrorMessage message={error} />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fbf0e5' }}>
       <Header />
       
-      <main className="flex-1 flex flex-col container mx-auto px-2 md:px-4 py-4 md:py-8">
-        <div className="flex flex-col max-w-4xl mx-auto w-full">
-          <div className="bg-white rounded-xl shadow-lg mb-4 md:mb-8 overflow-hidden">
-            <CalendarView
-              currentDate={currentDate}
-              onDateClick={handleDateClick}
-              onMonthChange={handleMonthChange}
-              getAvailableSpots={getAvailableSpots}
-              getReservations={getReservations}
-            />
+      <main className="flex-1 flex flex-col relative">
+        {/* Animation de chargement initial */}
+        {isInitialLoading && (
+          <div className={`
+            absolute inset-0 z-10 flex items-center justify-center
+            transition-opacity duration-500
+            ${showLoadingAnimation ? 'opacity-100' : 'opacity-0'}
+          `}>
+            <LoadingSpinner onAnimationComplete={handleAnimationComplete} hideHeader />
           </div>
+        )}
+
+        {/* Contenu principal */}
+        <div className={`
+          flex-1 flex flex-col container mx-auto px-2 md:px-4 py-4 md:py-8
+          transition-opacity duration-500
+          ${isInitialLoading ? 'opacity-0' : 'opacity-100'}
+        `}>
+          {loading && !isInitialLoading ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-8 h-8 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-secondary-600 font-medium">Chargement...</p>
+              </div>
+            </div>
+          ) : error ? (
+            <ErrorMessage message={error} />
+          ) : (
+            <div className="flex flex-col max-w-4xl mx-auto w-full">
+              <div className="bg-white rounded-xl shadow-lg mb-4 md:mb-8 overflow-hidden">
+                <CalendarView
+                  currentDate={currentDate}
+                  onDateClick={handleDateClick}
+                  onMonthChange={handleMonthChange}
+                  getAvailableSpots={getAvailableSpots}
+                  getReservations={getReservations}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
