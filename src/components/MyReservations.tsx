@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Edit3, Trash2, Save, X, AlertCircle, CheckCircle } from 'lucide-react';
+import { Calendar, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
 import { ReservationService } from '../services/reservationService';
 import { Reservation } from '../types/presence';
 import NameSelector from './NameSelector';
@@ -26,8 +26,6 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   const [reservations, setReservations] = useState<UserReservation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editName, setEditName] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -53,38 +51,6 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   useEffect(() => {
     loadUserReservations();
   }, [userName]);
-
-  const handleEdit = (reservation: UserReservation) => {
-    setEditingId(reservation.id);
-    setEditName(reservation.name);
-  };
-
-  const handleSaveEdit = async (reservation: UserReservation) => {
-    if (!editName.trim() || editName.trim() === reservation.name) {
-      setEditingId(null);
-      return;
-    }
-
-    setActionLoading(reservation.id);
-    setError(null);
-
-    try {
-      const date = new Date(reservation.date);
-      await ReservationService.updateReservation(reservation.name, editName.trim(), date);
-      await loadUserReservations();
-      onReservationChange();
-      setEditingId(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors de la modification');
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditName('');
-  };
 
   const handleDelete = async (reservation: UserReservation) => {
     setActionLoading(reservation.id);
@@ -120,7 +86,16 @@ const MyReservations: React.FC<MyReservationsProps> = ({
     return date < today;
   };
 
-  const sortedReservations = [...reservations].sort((a, b) => 
+  // Filtrer pour ne garder que les réservations d'aujourd'hui et futures
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const futureReservations = reservations.filter(reservation => {
+    const reservationDate = new Date(reservation.date);
+    return reservationDate >= today;
+  });
+
+  const sortedReservations = [...futureReservations].sort((a, b) => 
     new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
@@ -173,11 +148,11 @@ const MyReservations: React.FC<MyReservationsProps> = ({
           <div className="w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="text-secondary-600">Chargement de vos réservations...</p>
         </div>
-      ) : reservations.length === 0 ? (
+      ) : futureReservations.length === 0 ? (
         <div className="text-center py-8">
           <div className="p-4 bg-secondary-50 rounded-lg">
             <p className="text-secondary-600">
-              Aucune réservation trouvée pour <span className="font-medium">{userName}</span>
+              Aucune réservation future trouvée pour <span className="font-medium">{userName}</span>
             </p>
             <p className="text-sm text-secondary-500 mt-1">
               Utilisez le calendrier pour créer une nouvelle réservation
@@ -189,97 +164,51 @@ const MyReservations: React.FC<MyReservationsProps> = ({
           <div className="flex items-center gap-2 mb-4">
             <CheckCircle className="h-5 w-5 text-success-600" />
             <span className="font-medium text-secondary-900">
-              {reservations.length} réservation{reservations.length > 1 ? 's' : ''} trouvée{reservations.length > 1 ? 's' : ''}
+              {futureReservations.length} réservation{futureReservations.length > 1 ? 's' : ''} à venir
             </span>
           </div>
 
           {sortedReservations.map((reservation) => {
-            const isEditing = editingId === reservation.id;
             const isDeleting = deletingId === reservation.id;
             const isActionLoading = actionLoading === reservation.id;
-            const isPast = isPastDate(reservation.date);
+            const isToday = new Date(reservation.date).toDateString() === new Date().toDateString();
 
             return (
               <div
                 key={reservation.id}
                 className={`
                   border rounded-lg p-4 transition-all duration-200
-                  ${isPast ? 'bg-gray-50 border-gray-200' : 'bg-white border-secondary-200 hover:border-primary-300'}
+                  ${isToday ? 'bg-primary-50 border-primary-200' : 'bg-white border-secondary-200 hover:border-primary-300'}
                 `}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <div className={`w-2 h-2 rounded-full ${isPast ? 'bg-gray-400' : 'bg-success-500'}`}></div>
-                      <p className={`font-medium ${isPast ? 'text-gray-600' : 'text-secondary-900'}`}>
+                      <div className={`w-2 h-2 rounded-full ${isToday ? 'bg-primary-500' : 'bg-success-500'}`}></div>
+                      <p className="font-medium text-secondary-900">
                         {formatDate(reservation.date)}
                       </p>
-                      {isPast && (
-                        <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
-                          Passée
+                      {isToday && (
+                        <span className="text-xs bg-primary-200 text-primary-700 px-2 py-1 rounded-full">
+                          Aujourd'hui
                         </span>
                       )}
                     </div>
                     
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        className="w-full px-2 py-1 text-sm border border-secondary-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
-                        placeholder="Nouveau nom"
-                        disabled={isActionLoading}
-                      />
-                    ) : (
-                      <p className={`text-sm ${isPast ? 'text-gray-500' : 'text-secondary-600'}`}>
-                        Réservé par : {reservation.name}
-                      </p>
-                    )}
+                    <p className="text-sm text-secondary-600">
+                      Réservé par : {reservation.name}
+                    </p>
                   </div>
 
-                  {!isPast && (
-                    <div className="flex items-center gap-1 ml-3">
-                      {isEditing ? (
-                        <>
-                          <button
-                            onClick={() => handleSaveEdit(reservation)}
-                            disabled={isActionLoading || !editName.trim()}
-                            className="p-2 text-success-600 hover:bg-success-50 rounded-lg transition-colors duration-200 disabled:opacity-50"
-                          >
-                            {isActionLoading ? (
-                              <div className="w-4 h-4 border-2 border-success-600 border-t-transparent rounded-full animate-spin"></div>
-                            ) : (
-                              <Save className="h-4 w-4" />
-                            )}
-                          </button>
-                          <button
-                            onClick={handleCancelEdit}
-                            disabled={isActionLoading}
-                            className="p-2 text-secondary-600 hover:bg-secondary-50 rounded-lg transition-colors duration-200"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() => handleEdit(reservation)}
-                            disabled={isActionLoading}
-                            className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-200"
-                          >
-                            <Edit3 className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => setDeletingId(reservation.id)}
-                            disabled={isActionLoading}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )}
+                  <div className="flex items-center gap-1 ml-3">
+                    <button
+                      onClick={() => setDeletingId(reservation.id)}
+                      disabled={isActionLoading}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Modal de confirmation de suppression */}
