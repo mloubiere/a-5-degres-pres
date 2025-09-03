@@ -138,7 +138,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                   value={name}
                   onChange={setName}
                   names={availableNames}
-                  placeholder="Rechercher ou sélectionner votre nom..."
+                  placeholder="Renseigner ou sélectionner votre nom..."
                 />
               </div>
               
