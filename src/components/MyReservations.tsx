@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Edit3, Trash2, Save, X, AlertCircle, CheckCircle } from 'lucide-react';
 import { ReservationService } from '../services/reservationService';
 import { Reservation } from '../types/presence';
+import NameSelector from './NameSelector';
 
 interface MyReservationsProps {
   userName: string;
   onUserNameChange: (name: string) => void;
+  availableNames: string[];
   onReservationChange: () => void;
 }
 
@@ -18,6 +20,7 @@ interface UserReservation extends Reservation {
 const MyReservations: React.FC<MyReservationsProps> = ({
   userName,
   onUserNameChange,
+  availableNames,
   onReservationChange
 }) => {
   const [reservations, setReservations] = useState<UserReservation[]>([]);
@@ -137,16 +140,14 @@ const MyReservations: React.FC<MyReservationsProps> = ({
         <label htmlFor="userName" className="block text-sm font-medium text-secondary-700 mb-2">
           Votre nom complet
         </label>
-        <input
-          type="text"
-          id="userName"
+        <NameSelector
           value={userName}
-          onChange={(e) => onUserNameChange(e.target.value)}
-          className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          placeholder="ex : Mathieu Loubière"
+          onChange={onUserNameChange}
+          names={availableNames}
+          placeholder="Rechercher ou sélectionner votre nom..."
         />
         <p className="text-xs text-secondary-500 mt-1">
-          Entrez votre nom pour voir et gérer vos réservations
+          Sélectionnez votre nom pour voir et gérer vos réservations
         </p>
       </div>
 

@@ -10,11 +10,15 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "79dbf7f7-dfe8-4fbb-92a5-e58b943e123e",
+  
+  // Only initialize OneSignal in production
+  if (window.location.hostname !== 'localhost') {
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "79dbf7f7-dfe8-4fbb-92a5-e58b943e123e",
+      });
     });
-  });
+  }
 </script>
   </head>
   <body>
