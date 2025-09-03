@@ -113,13 +113,13 @@ const MyReservations: React.FC<MyReservationsProps> = ({
 
       <div className="mb-6">
         <label htmlFor="userName" className="block text-sm font-medium text-secondary-700 mb-2">
-          Votre nom complet
+          Votre nom
         </label>
         <NameSelector
           value={userName}
           onChange={onUserNameChange}
           names={availableNames}
-          placeholder="Rechercher ou sélectionner votre nom..."
+          placeholder="Rechercher et sélectionner votre nom"
         />
         <p className="text-xs text-secondary-500 mt-1">
           Sélectionnez votre nom pour voir et gérer vos réservations
