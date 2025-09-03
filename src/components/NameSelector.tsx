@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, ChevronDown, User, X } from 'lucide-react';
+import { Search, ChevronDown, User, X, UserPlus } from 'lucide-react';
 
 interface NameSelectorProps {
   value: string;
