@@ -140,4 +140,21 @@ export class ReservationService {
       throw new Error('Impossible de modifier la réservation');
     }
   }
+
+  // Récupérer tous les noms uniques des réservations
+  static async getAllUniqueNames(): Promise<string[]> {
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('name')
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des noms:', error);
+      throw new Error('Impossible de récupérer la liste des noms');
+    }
+
+    // Extraire les noms uniques
+    const uniqueNames = Array.from(new Set(data?.map(item => item.name) || []));
+    return uniqueNames.sort();
+  }
 }

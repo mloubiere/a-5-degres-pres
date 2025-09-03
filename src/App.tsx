@@ -29,6 +29,7 @@ function App() {
   const {
     loading,
     error,
+    allNames,
     createReservation,
     getReservations,
     getAvailableSpots,
@@ -155,6 +156,7 @@ function App() {
                 <MyReservations
                   userName={userName}
                   onUserNameChange={setUserName}
+                  availableNames={allNames}
                   onReservationChange={handleReservationChange}
                 />
               )}
@@ -168,6 +170,7 @@ function App() {
           date={selectedDate}
           availableSpots={getAvailableSpots(selectedDate)}
           reservations={getReservations(selectedDate)}
+          availableNames={allNames}
           onClose={() => setIsModalOpen(false)}
           onReserve={handleReservation}
         />

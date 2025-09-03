@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { X, Calendar, Users, MapPin, UserPlus } from 'lucide-react';
 import { Reservation } from '../types/presence';
+import NameSelector from './NameSelector';
 
 interface ReservationModalProps {
   date: Date;
   availableSpots: number;
   reservations: Reservation[];
+  availableNames: string[];
   onClose: () => void;
   onReserve: (date: Date, name: string) => void;
 }
@@ -14,6 +16,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
   date,
   availableSpots,
   reservations,
+  availableNames,
   onClose,
   onReserve
 }) => {
@@ -131,14 +134,11 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 <label htmlFor="name" className="block text-sm font-medium text-secondary-700 mb-2">
                   Prénom et nom
                 </label>
-                <input
-                  type="text"
-                  id="name"
+                <NameSelector
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="ex : Mathieu Loubière"
-                  required
+                  onChange={setName}
+                  names={availableNames}
+                  placeholder="Rechercher ou sélectionner votre nom..."
                 />
               </div>
               

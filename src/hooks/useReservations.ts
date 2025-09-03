@@ -4,8 +4,20 @@ import { Reservation } from '../types/presence';
 
 export const useReservations = (currentDate: Date) => {
   const [reservationsByDate, setReservationsByDate] = useState<{ [date: string]: Reservation[] }>({});
+  const [allNames, setAllNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Charger tous les noms uniques
+  const loadAllNames = useCallback(async () => {
+    try {
+      const names = await ReservationService.getAllUniqueNames();
+      setAllNames(names);
+    } catch (err) {
+      console.error('Erreur lors du chargement des noms:', err);
+      // Ne pas afficher d'erreur pour les noms, ce n'est pas critique
+    }
+  }, []);
 
   // Charger les réservations du mois
   const loadReservations = useCallback(async () => {
@@ -16,13 +28,15 @@ export const useReservations = (currentDate: Date) => {
       const month = currentDate.getMonth();
       const data = await ReservationService.getReservationsByMonth(year, month);
       setReservationsByDate(data);
+      // Charger aussi les noms
+      await loadAllNames();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors du chargement des réservations');
       console.error('Erreur lors du chargement des réservations:', err);
     } finally {
       setLoading(false);
     }
-  }, [currentDate]);
+  }, [currentDate, loadAllNames]);
 
   // Charger les réservations au montage et quand le mois change
   useEffect(() => {
@@ -55,6 +69,7 @@ export const useReservations = (currentDate: Date) => {
   // Vérifier si une personne a une réservation pour une date
   return {
     reservationsByDate,
+    allNames,
     loading,
     error,
     createReservation,
