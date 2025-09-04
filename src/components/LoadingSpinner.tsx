@@ -28,7 +28,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onAnimationComplete, hi
             <img 
               src="/images/Logo_5D.png" 
               alt="5 Degrés Logo" 
-              className="w-32 h-32 md:w-40 md:h-40 object-contain animate-pulse"
+              className="w-32 h-32 md:w-40 md:h-40 object-contain"
               onLoad={handleAnimationComplete}
             />
           </div>
