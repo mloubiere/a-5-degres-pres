@@ -63,7 +63,7 @@ export const useReservations = (currentDate: Date) => {
   // Obtenir le nombre de places disponibles pour une date
   const getAvailableSpots = useCallback((date: Date): number => {
     const reservations = getReservations(date);
-    return Math.max(0, 12 - reservations.length);
+    return Math.max(0, 15 - reservations.length);
   }, [getReservations]);
 
   // Vérifier si une personne a une réservation pour une date
