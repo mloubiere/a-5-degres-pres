@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import Lottie from 'lottie-react';
-import animationData from '../assets/Animation LottieFiles.json';
 import Header from './Header';
 
 interface LoadingSpinnerProps {
@@ -26,13 +24,12 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onAnimationComplete, hi
       
       <div className={`flex items-center justify-center ${hideHeader ? 'h-full' : 'min-h-[calc(100vh-80px)]'}`}>
         <div className="text-center">
-          <div className="mb-6" style={{ marginLeft: '45px' }}>
-            <Lottie
-              animationData={animationData}
-              loop={false}
-              autoplay={true}
-              style={{ width: 200, height: 200 }}
-              onComplete={handleAnimationComplete}
+          <div className="mb-6 flex justify-center">
+            <img 
+              src="/images/Logo_5D.png" 
+              alt="5 Degrés Logo" 
+              className="w-32 h-32 md:w-40 md:h-40 object-contain animate-pulse"
+              onLoad={handleAnimationComplete}
             />
           </div>
           <p className="text-lg font-medium text-secondary-700">
