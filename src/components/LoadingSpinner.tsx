@@ -11,10 +11,10 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onAnimationComplete, hi
 
   const handleAnimationComplete = () => {
     setAnimationComplete(true);
-    // Délai court avant de déclencher la transition
+    // Délai de 2 secondes avant de déclencher la transition
     setTimeout(() => {
       onAnimationComplete?.();
-    }, 300);
+    }, 2000);
   };
 
 
