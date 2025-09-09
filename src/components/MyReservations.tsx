@@ -99,13 +99,14 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const futureReservations = reservations.filter(reservation => {
+  const currentAndFutureReservations = reservations.filter(reservation => {
     const [year, month, day] = reservation.date.split('-').map(Number);
     const reservationDate = new Date(year, month - 1, day);
+    reservationDate.setHours(0, 0, 0, 0);
     return reservationDate >= today;
   });
 
-  const sortedReservations = [...futureReservations].sort((a, b) => 
+  const sortedReservations = [...currentAndFutureReservations].sort((a, b) => 
     new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
@@ -158,11 +159,11 @@ const MyReservations: React.FC<MyReservationsProps> = ({
           <div className="w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="text-secondary-600">Chargement de vos réservations...</p>
         </div>
-      ) : futureReservations.length === 0 ? (
+      ) : currentAndFutureReservations.length === 0 ? (
         <div className="text-center py-8">
           <div className="p-4 bg-secondary-50 rounded-lg">
             <p className="text-secondary-600">
-              Aucune réservation future trouvée pour <span className="font-medium">{userName}</span>
+              Aucune réservation trouvée pour <span className="font-medium">{userName}</span>
             </p>
             <p className="text-sm text-secondary-500 mt-1">
               Utilisez le calendrier pour créer une nouvelle réservation
@@ -174,7 +175,7 @@ const MyReservations: React.FC<MyReservationsProps> = ({
           <div className="flex items-center gap-2 mb-4">
             <CheckCircle className="h-5 w-5 text-success-600" />
             <span className="font-medium text-secondary-900">
-              {futureReservations.length} réservation{futureReservations.length > 1 ? 's' : ''} à venir
+              {currentAndFutureReservations.length} réservation{currentAndFutureReservations.length > 1 ? 's' : ''}
             </span>
           </div>
 
@@ -183,8 +184,10 @@ const MyReservations: React.FC<MyReservationsProps> = ({
             const isActionLoading = actionLoading === reservation.id;
             const [year, month, day] = reservation.date.split('-').map(Number);
             // Créer la date avec l'ajustement pour éviter les problèmes de fuseau horaire
-            const reservationDate = new Date(year, month - 1, day + 1);
+            const reservationDate = new Date(year, month - 1, day);
+            reservationDate.setHours(0, 0, 0, 0);
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
             const isToday = reservationDate.toDateString() === today.toDateString();
 
             return (
