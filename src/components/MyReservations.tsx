@@ -199,7 +199,16 @@ const MyReservations: React.FC<MyReservationsProps> = ({
                     <div className="flex items-center gap-2 mb-1">
                       <div className={`w-2 h-2 rounded-full ${isToday ? 'bg-primary-500' : 'bg-success-500'}`}></div>
                       <p className="font-medium text-secondary-900">
-                        {formatDate(reservation.date)}
+                        {(() => {
+                          const [year, month, day] = reservation.date.split('-').map(Number);
+                          const adjustedDate = new Date(year, month - 1, day + 1);
+                          const weekdays = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+                          const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 
+                                         'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+                          const weekday = weekdays[adjustedDate.getDay()];
+                          const monthName = months[adjustedDate.getMonth()];
+                          return `${weekday} ${adjustedDate.getDate()} ${monthName} ${adjustedDate.getFullYear()}`;
+                        })()}
                       </p>
                       {isToday && (
                         <span className="text-xs bg-primary-200 text-primary-700 px-2 py-1 rounded-full">
