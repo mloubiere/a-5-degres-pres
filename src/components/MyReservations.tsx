@@ -73,12 +73,12 @@ const MyReservations: React.FC<MyReservationsProps> = ({
     // Parse manuel pour éviter les problèmes de fuseau horaire
     const [year, month, day] = dateString.split('-').map(Number);
     const date = new Date(year, month - 1, day);
-    return new Intl.DateTimeFormat('fr-FR', {
+    return date.toLocaleDateString('fr-FR', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
       year: 'numeric'
-    }).format(date);
+    });
   };
 
   const isPastDate = (dateString: string) => {
