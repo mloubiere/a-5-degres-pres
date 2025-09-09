@@ -72,13 +72,18 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   const formatDate = (dateString: string) => {
     // Parse manuel pour éviter les problèmes de fuseau horaire
     const [year, month, day] = dateString.split('-').map(Number);
+    
+    // Créer la date en heure locale et formater manuellement
     const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+    
+    const weekdays = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 
+                   'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    
+    const weekday = weekdays[date.getDay()];
+    const monthName = months[date.getMonth()];
+    
+    return `${weekday} ${day} ${monthName} ${year}`;
   };
 
   const isPastDate = (dateString: string) => {
