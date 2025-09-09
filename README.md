@@ -26,7 +26,7 @@ Cette application permet de :
 
 ## Contraintes
 
-- **Places disponibles** : 12 places assises par jour
+- **Places disponibles** : 15 places assises par jour
 - **Équipe interne** : 8-9 personnes présentes quotidiennement
 - **Places consultants** : 3-4 places variables selon les jours
 
