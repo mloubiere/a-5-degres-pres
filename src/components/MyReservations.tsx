@@ -182,7 +182,8 @@ const MyReservations: React.FC<MyReservationsProps> = ({
             const isDeleting = deletingId === reservation.id;
             const isActionLoading = actionLoading === reservation.id;
             const [year, month, day] = reservation.date.split('-').map(Number);
-            const reservationDate = new Date(year, month - 1, day);
+            // Créer la date avec l'ajustement pour éviter les problèmes de fuseau horaire
+            const reservationDate = new Date(year, month - 1, day + 1);
             const today = new Date();
             const isToday = reservationDate.toDateString() === today.toDateString();
 
