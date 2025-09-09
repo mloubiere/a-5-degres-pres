@@ -15,6 +15,8 @@ Cette application permet de :
 - Visualiser le nombre de places disponibles par jour
 - Réserver sa présence simplement
 - Voir qui sera présent (pour favoriser les rencontres)
+- Gérer les réservations
+- Supprimer une réservation
 
 ## Fonctionnalités MVP
 
