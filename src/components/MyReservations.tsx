@@ -101,7 +101,7 @@ const MyReservations: React.FC<MyReservationsProps> = ({
 
   const currentAndFutureReservations = reservations.filter(reservation => {
     const [year, month, day] = reservation.date.split('-').map(Number);
-    const reservationDate = new Date(year, month - 1, day);
+    const reservationDate = new Date(year, month - 1, day + 1); // Ajustement pour le fuseau horaire
     reservationDate.setHours(0, 0, 0, 0);
     return reservationDate >= today;
   });
@@ -183,12 +183,11 @@ const MyReservations: React.FC<MyReservationsProps> = ({
             const isDeleting = deletingId === reservation.id;
             const isActionLoading = actionLoading === reservation.id;
             const [year, month, day] = reservation.date.split('-').map(Number);
-            // Créer la date avec l'ajustement pour éviter les problèmes de fuseau horaire
-            const reservationDate = new Date(year, month - 1, day);
+            const reservationDate = new Date(year, month - 1, day + 1); // Ajustement pour le fuseau horaire
             reservationDate.setHours(0, 0, 0, 0);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const isToday = reservationDate.toDateString() === today.toDateString();
+            const isToday = reservationDate.getTime() === today.getTime();
 
             return (
               <div
