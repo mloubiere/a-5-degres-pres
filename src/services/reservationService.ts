@@ -110,7 +110,7 @@ export class ReservationService {
   static async getUserReservations(name: string): Promise<any[]> {
     const { data, error } = await supabase
       .from('reservations')
-      .select('*')
+      .select('id, name, date, created_at, updated_at')
       .eq('name', name.trim())
       .order('date', { ascending: true });
 
@@ -119,7 +119,11 @@ export class ReservationService {
       throw new Error('Impossible de récupérer vos réservations');
     }
 
-    return data || [];
+    // S'assurer que les dates restent des chaînes de caractères
+    return (data || []).map(reservation => ({
+      ...reservation,
+      date: typeof reservation.date === 'string' ? reservation.date : reservation.date.toISOString().split('T')[0]
+    }));
   }
 
   // Modifier une réservation (changer le nom)

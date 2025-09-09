@@ -70,17 +70,26 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('fr-FR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(date);
+    // Parse manuel pour éviter les problèmes de fuseau horaire
+    const [year, month, day] = dateString.split('-').map(Number);
+    
+    // Créer la date en heure locale et formater manuellement
+    const date = new Date(year, month - 1, day);
+    
+    const weekdays = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 
+                   'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    
+    const weekday = weekdays[date.getDay()];
+    const monthName = months[date.getMonth()];
+    
+    return `${weekday} ${day} ${monthName} ${year}`;
   };
 
   const isPastDate = (dateString: string) => {
-    const date = new Date(dateString);
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    date.setHours(0, 0, 0, 0);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return date < today;
@@ -89,9 +98,10 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   // Filtrer pour ne garder que les réservations d'aujourd'hui et futures
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   const futureReservations = reservations.filter(reservation => {
-    const reservationDate = new Date(reservation.date);
+    const [year, month, day] = reservation.date.split('-').map(Number);
+    const reservationDate = new Date(year, month - 1, day);
     return reservationDate >= today;
   });
 
@@ -171,7 +181,10 @@ const MyReservations: React.FC<MyReservationsProps> = ({
           {sortedReservations.map((reservation) => {
             const isDeleting = deletingId === reservation.id;
             const isActionLoading = actionLoading === reservation.id;
-            const isToday = new Date(reservation.date).toDateString() === new Date().toDateString();
+            const [year, month, day] = reservation.date.split('-').map(Number);
+            const reservationDate = new Date(year, month - 1, day);
+            const today = new Date();
+            const isToday = reservationDate.toDateString() === today.toDateString();
 
             return (
               <div
@@ -186,7 +199,16 @@ const MyReservations: React.FC<MyReservationsProps> = ({
                     <div className="flex items-center gap-2 mb-1">
                       <div className={`w-2 h-2 rounded-full ${isToday ? 'bg-primary-500' : 'bg-success-500'}`}></div>
                       <p className="font-medium text-secondary-900">
-                        {formatDate(reservation.date)}
+                        {(() => {
+                          const [year, month, day] = reservation.date.split('-').map(Number);
+                          const adjustedDate = new Date(year, month - 1, day + 1);
+                          const weekdays = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+                          const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 
+                                         'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+                          const weekday = weekdays[adjustedDate.getDay()];
+                          const monthName = months[adjustedDate.getMonth()];
+                          return `${weekday} ${adjustedDate.getDate()} ${monthName} ${adjustedDate.getFullYear()}`;
+                        })()}
                       </p>
                       {isToday && (
                         <span className="text-xs bg-primary-200 text-primary-700 px-2 py-1 rounded-full">
