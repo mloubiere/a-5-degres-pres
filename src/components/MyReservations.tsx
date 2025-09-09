@@ -70,10 +70,9 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   };
 
   const formatDate = (dateString: string) => {
-    // Créer la date en heure locale pour éviter les problèmes de fuseau horaire
-    // dateString est au format "YYYY-MM-DD"
+    // Parse manuel pour éviter les problèmes de fuseau horaire
     const [year, month, day] = dateString.split('-').map(Number);
-    const date = new Date(year, month - 1, day); // month - 1 car les mois sont indexés à partir de 0
+    const date = new Date(year, month - 1, day);
     return new Intl.DateTimeFormat('fr-FR', {
       weekday: 'long',
       day: 'numeric',
@@ -83,9 +82,9 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   };
 
   const isPastDate = (dateString: string) => {
-    // Même correction pour la comparaison des dates
     const [year, month, day] = dateString.split('-').map(Number);
     const date = new Date(year, month - 1, day);
+    date.setHours(0, 0, 0, 0);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return date < today;
@@ -94,9 +93,10 @@ const MyReservations: React.FC<MyReservationsProps> = ({
   // Filtrer pour ne garder que les réservations d'aujourd'hui et futures
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   const futureReservations = reservations.filter(reservation => {
-    const reservationDate = new Date(reservation.date);
+    const [year, month, day] = reservation.date.split('-').map(Number);
+    const reservationDate = new Date(year, month - 1, day);
     return reservationDate >= today;
   });
 
@@ -176,10 +176,10 @@ const MyReservations: React.FC<MyReservationsProps> = ({
           {sortedReservations.map((reservation) => {
             const isDeleting = deletingId === reservation.id;
             const isActionLoading = actionLoading === reservation.id;
-            // Correction pour la détection du jour actuel
             const [year, month, day] = reservation.date.split('-').map(Number);
             const reservationDate = new Date(year, month - 1, day);
-            const isToday = reservationDate.toDateString() === new Date().toDateString();
+            const today = new Date();
+            const isToday = reservationDate.toDateString() === today.toDateString();
 
             return (
               <div
