@@ -74,7 +74,7 @@ const MyReservations: React.FC<MyReservationsProps> = ({
     const [year, month, day] = dateString.split('-').map(Number);
     
     // Créer la date en heure locale et formater manuellement
-    const date = new Date(year, month - 1, day);
+    const date = new Date(year, month - 1, day + 2);
     
     const weekdays = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
     const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 
