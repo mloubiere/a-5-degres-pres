@@ -249,7 +249,16 @@ const MyReservations: React.FC<MyReservationsProps> = ({
                         </h3>
                         
                         <p className="text-secondary-600 mb-6">
-                          Êtes-vous sûr de vouloir supprimer votre réservation pour le {formatDate(reservation.date)} ?
+                          Êtes-vous sûr de vouloir supprimer votre réservation pour le {(() => {
+                            const [year, month, day] = reservation.date.split('-').map(Number);
+                            const adjustedDate = new Date(year, month - 1, day + 1);
+                            const weekdays = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+                            const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 
+                                           'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+                            const weekday = weekdays[adjustedDate.getDay()];
+                            const monthName = months[adjustedDate.getMonth()];
+                            return `${weekday} ${adjustedDate.getDate()} ${monthName} ${adjustedDate.getFullYear()}`;
+                          })()} ?
                         </p>
                         
                         <div className="flex gap-3">
